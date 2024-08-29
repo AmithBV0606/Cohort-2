@@ -1,0 +1,15 @@
+{
+  "name": "2.2-live",
+  "version": "1.0.0",
+  "description": "1. A protocol that is defined for machines to communicate",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Object Model</title>
+</head>
+<body>
+    <input oninput="debounce()" type="text" placeholder="First Number" id="val1"><br><br>
+
+    <input oninput="debounce()" type="text" placeholder="Second Number" id="val2"><br><br>
+
+    <!-- <button onclick="populateDiv()">Calculate Sum</button><br><br> -->
+
+    <div id="finalSum"></div>
+
+    <script>
+        async function populateDiv() {
+            const firstValue = document.getElementById("val1").value;
+            const secondValue = document.getElementById("val2").value;
+
+            // Backend call
+            const response = await fetch(`http://localhost:3000/sum?a=${firstValue}&b=${secondValue}`);
+            const data = await response.json();
+            document.getElementById("finalSum").innerHTML = `Sum is ${data.sum}.`;
+        }
+
+        let timeout;
+        function debounce() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                populateDiv()
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

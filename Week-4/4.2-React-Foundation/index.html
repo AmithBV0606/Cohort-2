@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Foundation</title>
+    <style>
+        #container {
+            height: 90vh;
+            width: 100%;
+            border: 2px solid;
+            border-radius: 10px;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid;
+            margin: 10px;
+            height: auto;
+            width: auto;
+            padding: 0 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <input 
+        type="text"
+        placeholder="Title" 
+        id="title"
+           
+    >
+
+    <input 
+        type="text"
+        placeholder="Description" 
+        id="description"   
+    >
+
+    <button onclick="addTodo()" >Add Todo</button>
+
+    <div id="container">
+        <!-- Content will be added dynamically -->
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

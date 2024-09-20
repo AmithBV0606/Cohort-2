@@ -36,23 +36,27 @@ const todos = [
   },
 ];
 
-app.get("/todo", (req, res) => {
-  const todo = todos.find((t) => t.id == req.query.id);
+app.get("/todo/:id", (req, res) => {
+  const todo = todos.filter((todo) => todo.id == req.params.id);
   res.json({
     todo,
   });
 });
 
 app.get("/todos", (req, res) => {
-  const randomTodos = [];
-  for (let i = 0; i < 5; i++) {
-    if (Math.random() > 0.5) {
-      randomTodos.push(todos[i]);
-    }
-  }
+  // const randomTodos = [];
+  // for (let i = 0; i < 5; i++) {
+  //   if (Math.random() > 0.5) {
+  //     randomTodos.push(todos[i]);
+  //   }
+  // }
+  // res.json({
+  //   todos: randomTodos,
+  // });
+
   res.json({
-    todos: randomTodos,
-  });
+    todos
+  })
 });
 
 // function getRandomNumber(max) {

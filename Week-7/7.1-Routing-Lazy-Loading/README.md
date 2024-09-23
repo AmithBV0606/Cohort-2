@@ -112,3 +112,5 @@ export default Contact;
     - Lazy loading in React is a technique used to improve performance by delaying the loading of components or other assets until they are actually needed.
 
     - This can help reduce the initial load time of your application and improve user experience, especially for larger applications with many components or heavy assets.
+
+__NOTE :__ When you're sending the request to backend, you receive the response in the form of JSON, through Lazy Loading, we're getting the actual data and not the JSON data.

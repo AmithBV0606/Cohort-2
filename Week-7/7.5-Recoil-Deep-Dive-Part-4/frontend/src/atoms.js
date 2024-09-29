@@ -9,6 +9,9 @@ export const todosAtomFamily = atomFamily({
     get:
       (id) =>
       async ({get}) => {
+        await new Promise((r) => setTimeout(r, 5000));
+        throw new console.error("ERROR");
+        
         const res = await axios.get(`http://localhost:8080/todo?id=${id}`);
         return res.data.todo;
       },

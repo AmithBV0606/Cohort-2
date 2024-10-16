@@ -1,0 +1,21 @@
+{
+  "name": "10.2-prismaorm",
+  "version": "1.0.0",
+  "description": "ORM stands for Object-Relational Mapping, a programming technique used in software development to convert data between incompatible type systems in object-oriented programming languages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "prisma": "^5.21.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.21.0"
+  }
+}

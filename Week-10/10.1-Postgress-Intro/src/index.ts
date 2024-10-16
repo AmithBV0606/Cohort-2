@@ -2,7 +2,7 @@
 import { Client } from "pg";
 
 export const client = new Client({
-    connectionString: "";
+    // connectionString: "";
 });
 
 // t2rjwZ3uSdRI

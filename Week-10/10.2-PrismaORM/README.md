@@ -148,3 +148,26 @@ npx prisma migrate dev --name init
     - It creates a new SQL migration file for this migration.
 
     - It runs the SQL migration file against the database.
+
+**Step 8 :** Generating the prisma client
+
+Client represents all the functions that convert : 
+```javascript
+User.create({email: "harkirat@gmail.com"})
+```
+Into : 
+```sql
+INSERT INTO users VALUES('harkirat@gmail.com');
+```
+
+**NOTE :** Once you’ve created the `prisma/schema.prisma` , you can generate these `clients`  that you can use in your Node.js app.
+
+### How to generate the client?
+```bash
+npm install @prisma/client
+```
+
+To use prisma client without installing the prisma/client :
+```bash
+npx prisma generate
+```

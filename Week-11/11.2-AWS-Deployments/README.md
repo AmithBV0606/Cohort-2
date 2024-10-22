@@ -54,6 +54,16 @@
 
  **NOTE 2 :** Before starting a node js project, we need to install Node.js on ubuntu OS. [Click here](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04) for more details.
 
+ **NOTE 3 :** To keep the index.js file keep running even after shutting the pc, run the following command
+ ```bash
+npm i -g pm2
+
+# Then,
+
+pm2 start index.js
+ ```
+ where pm stands fro Process Manager.
+
  ### After SSHing into the server, Try hitting the server
 
  You have an ip/DNS that you can hit to access your ec2 server
@@ -77,3 +87,34 @@ Now try hitting the backend
 ```txt
 http://your_domain:8080
 ``` 
+
+## Nginx
+
+    NGINX is open source software for web serving, reverse proxying, caching, load balancing, media streaming, and more. 
+    
+    It started out as a web server designed for maximum performance and stability. 
+    
+    In addition to its HTTP server capabilities, NGINX can also function as a proxy server for email (IMAP, POP3, and SMTP) and a reverse proxy and load balancer for HTTP, TCP, and UDP servers.
+
+Resources : https://www.nginx.com/resources/glossary/nginx/
+
+### What is a reverse proxy?
+<img src="./assets/Pic-14.webp" />
+
+### Installing nginx
+```bash
+sudo apt update
+sudo apt install nginx
+```
+Resources : https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview
+
+This should start a nginx server on port 80
+
+Try visiting the website
+<img src="./assets/Pic-15.webp" />
+
+# Analogy of today's class :
+
+    EC2 is like a hotel, and ports are like rooms in the hotel. A reverse proxy acts as the hotel manager, directing guests (requests) to their respective rooms (ports).
+
+    In this analogy, Nginx is the hotel manager, handling requests and directing them to the right room (port). The manager (Nginx) also hides the specific room number (port) under the hotel name (domain name), so guests only need the hotel name to find their way. When a guest arrives with just the hotel name (domain), the hotel manager (Nginx) automatically redirects them to the correct room (port) without revealing the room number itself.

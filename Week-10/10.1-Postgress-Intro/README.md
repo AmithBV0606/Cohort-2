@@ -30,12 +30,12 @@
 - It’s schemaless(Different rows can have different schema) properties make it ideal to for bootstraping a project fast.
 - But as your app grows, this property makes it very easy for data to get curropted
 
-### Pro's of NoSQL databases
+### Con's of NoSQL databases
 - Can lead to inconsistent database.
 - Can cause runtime errors. 
 - Is too flexible for an app that needs strictness.
 
-### Con's of NoSQL database
+### Pro's of NoSQL database
 - Can move very fast.
 - Can change schema very easily.
 

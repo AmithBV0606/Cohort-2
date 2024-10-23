@@ -76,7 +76,7 @@ your_domain:8080
  Notice you can’t visit the website during this time
  <img src="./assets/Pic-10.webp" />
 
- ### Solution : Security group
+ ### Solution : Security group : Temperaury Solution :
 <img src="./assets/Pic-11.webp" />
 
 You can either open port 8080, or process on port 80
@@ -88,7 +88,7 @@ Now try hitting the backend
 http://your_domain:8080
 ``` 
 
-## Nginx
+## Nginx(Permanent solution)
 
     NGINX is open source software for web serving, reverse proxying, caching, load balancing, media streaming, and more. 
     

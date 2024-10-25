@@ -60,6 +60,10 @@ Then try disabling it.
 ```bash
 npm install -g typescript
 ```
+**NOTE :** Follow the step 1 only if you're using typescript for the first time. To chech if your pc already has typscript, use the following command
+```bash
+tsc -v
+```
 
 **Step 2** - Initialize an empty Node.js project with typescript
 ```bash

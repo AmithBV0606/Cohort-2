@@ -155,6 +155,8 @@ handleEvent('mousemove'); // OK
 
 ## 6) Type Inferences In Zod
 
+    When using zod we're doing runtime validation.
+
     Type inference in Zod is a powerful feature that allows TypeScript to automatically determine the type of data validated by a Zod schema. 
     
     This capability is particularly useful in applications where runtime validation coincides with compile-time type safety, ensuring that your code not only runs correctly but is also correctly typed according to your Zod schemas.

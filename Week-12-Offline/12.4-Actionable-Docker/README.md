@@ -67,9 +67,15 @@ The commands listed are part of the basic Docker `CLI` (Command Line Interface) 
 
 ### Running an image : 
 
-1) Running a simple image : 
+1) Pulling a simple image : 
 
 Let’s say you wan’t to run MongoDB locally https://hub.docker.com/_/mongo
+
+```bash
+docker pull mongo:latest
+```
+
+This will pull the mongo image using which you can create containers.
 
 ```bash
 docker run mongo
@@ -119,12 +125,50 @@ docker kill <container_id>
 
 ### For starting a postgres container : 
 
+1) **Pull PostgreSQL image** :
+
+```bash
+docker pull postgres:latest
+```
+
+**NOTE :** If downloading image in your machine is successfully completed then you can verify.
+
+```bash
+docker images -a
+```
+
+2) **Run Container** :
+
 ```bash 
-docker run -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+docker run --name <container_name> -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
 ```
 
 Where :
-- `-e ` : Environment variables.
+- `name` : Allows you to assign a container name
+- `-e ` : This flag lets you specify an environment variable.
+
+**NOTE :** By default postgres image has default `postgres` user and password `mysecretpassword`.
+  
+- `-p ` : Port mapping.
+- `-d ` : This flag is used to detach the container from our terminal and run it in the background.
+
+**NOTE :** There are two ways of running a container — in attached mode (in the foreground) or in detached mode (in the background).
+
+By default, Docker runs the container in attached mode. Meaning it’s attached to the terminal session, where it displays output and messages.
+
+
+
+3) **SSH'ing to the container through CLI** :
+```bash
+docker exec -it <container_id/container_name> /bin/bash
+```
+
+This will let us to connect to container throgh CLI
+
+Then give the credentials as following : 
+```bash
+psql -h localhost -d postgres -U postgres
+```
 
 #### The connection string for this postgres would be :
 ```bash

@@ -83,6 +83,11 @@ npx tsc --init
 ```bash
 npx prisma init
 ```
+**This command does two things:**
+
+- creates a new directory called prisma that contains a file called schema.prisma, which contains the Prisma schema with your database connection variable and schema models
+
+- creates the .env file in the root directory of the project, which is used for defining environment variables (such as your database connection)
 
 **Step 5 :** Connect your database
 

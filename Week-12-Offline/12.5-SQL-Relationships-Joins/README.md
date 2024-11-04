@@ -208,9 +208,3 @@ SELECT users.username, addresses.city, addresses.country, addresses.street, addr
 FROM users
 FULL JOIN addresses ON users.id = addresses.user_id;
 ```
-
-## Running PostgreSQL in Docker Container with Volume
-
-Link 1 : [Click Here](https://medium.com/@basit26374/how-to-run-postgresql-in-docker-container-with-volume-bound-c141f94e4c5a)
-
-Link 2 : [Clicke Here](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/)

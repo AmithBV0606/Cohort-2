@@ -174,3 +174,9 @@ psql -h localhost -d postgres -U postgres
 ```bash
 postgresql://postgres:mysecretpassword@localhost:5432/postgres
 ```
+
+### Articles about pulling Postgre image and creating the postgres container :
+
+Link 1 : [Click Here](https://medium.com/@basit26374/how-to-run-postgresql-in-docker-container-with-volume-bound-c141f94e4c5a)
+
+Link 2 : [Clicke Here](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/)

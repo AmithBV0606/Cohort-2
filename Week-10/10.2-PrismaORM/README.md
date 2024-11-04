@@ -143,7 +143,9 @@ model Post {
 }
 ```
 
-**Step 7 :** To map your data model to the database schema, you need to use the prisma migrate CLI commands:
+**Step 7 :** To map your data model to the database schema, you need to use the prisma migrate CLI commands: 
+
+Basically to convert from prisma schema to SQL query, use the following command :
 
 ```bash
 npx prisma migrate dev --name init

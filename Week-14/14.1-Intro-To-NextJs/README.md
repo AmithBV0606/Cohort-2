@@ -1,10 +1,10 @@
 # Intro into NextJs
 
-### Pre-requisites
+## Pre-requisites
 You need to understand basic Frontend before proceeding to this track.
 You need to know what React is and how you can create a simple application in it.
 
-### NextJS Intro
+## NextJS Intro
 NextJS was a framework that was introduced because of some minor inconviniences in React, such as : 
 
 1. In a React project, you have to maintain a separate Backend project for your API routes.
@@ -94,6 +94,8 @@ npx create-next-app@latest
 
 <img src="./assets/Pic-6.webp" />
 
+**Note :** `.next` is similar to `build/dist` in react.
+
 ## Routing in Next.js :
 
 - Next.js has a file based router (https://nextjs.org/docs/app/building-your-application/routing/defining-routes).
@@ -156,8 +158,91 @@ Layouts let you wrap all child pages inside some logic.
 
 <img src="./assets/Pic-10.png" />
 
-## Layouts in sub routes : 
+## Layouts in sub-routes : 
 
 What if you wan’t all routes that start with /signin  to have a banner that says Login now to get 20% off
 
 <img src="./assets/Pic-11.webp" />
+
+## Merging routes : 
+
+What if you wan’t to get the banner in both signup and signin?
+
+**Approach #1 :**
+Move both the `signin` and `signup` folder inside a `auth` folder where we have the layout
+
+<img src="./assets/Pic-12.webp" />
+
+**Note :** You can access the routes at 
+http://localhost:3000/auth/signup and http://localhost:3000/auth/signin
+
+**Approach #2 :**
+You can use create a new folder with () around the name. 
+This folder is ignored by the router.
+
+<img src="./assets/Pic-13.webp" />
+
+**Note :** You can access the routes at 
+http://localhost:3000/signup and http://localhost:3000/signin
+
+## components directory : 
+
+You should put all your components in a components directory and use them in the app routes rather than shoving everything in the route handler.
+
+1. Create a new folder called `components` in the root of the project.
+2. Add a new component there called `Signin.tsx`
+3. Move the `signin` logic there
+4. Render the `Signin` component in `app/(auth)signin/page.tsx`
+
+## Experiment with onClick event listensers : 
+
+Now try adding a onclick handler to the button on the signin page
+
+```ts
+<button onClick={() => {
+    console.log("User clicked on signin")
+}} type="button" className="mt-8 w-full text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Sign in</button>
+```
+
+**Note :** You will notice an error when you open the page
+
+<img src="./assets/Pic-14.webp" />
+
+What do you think is happening here? Let’s explore in the next slide.
+
+## Client and server components : 
+
+Ref - https://nextjs.org/learn/react-foundations/server-and-client-components
+
+NextJS expects you to identify all your components as either `client` or `server`. 
+
+As the name suggests : 
+
+ - Server components are rendered on the server.
+
+ - Client components are pushed to the client to be rendered.
+
+**Note :** By default, all components are server components.
+
+If you wan’t to mark a component as a client component, you need to add the following to the top of the component - 
+
+```ts
+"use client"
+```
+
+### When should you create `client components` ?
+
+1. Whenever you get an error that tells you that you need to create a client component.
+
+2. Whenever you’re using something that the server doesn’t understand (useEffect, useState, onClick…)
+
+**Note** : Rule of thumb is to **defer the client as much as possible**
+
+<img src="./assets/Pic-15.webp" />
+
+**Some nice readings** - 
+https://github.com/vercel/next.js/discussions/43153
+
+**Alternate Solution** : Create a seperate Button component and make it a client component.
+
+Additional Resources : https://github.com/reactwg/server-components/discussions/4

@@ -13,19 +13,19 @@ Docker is a powerful platform that serves several purposes in the development, d
 **NOTE :** Docker lets you create containers, which are nothing but mini machines with their own networks and file system
 
 ### Container :
-    A Docker container is a standalone, executable package of software that contains all the components needed to run an application.
+- A Docker container is a standalone, executable package of software that contains all the components needed to run an application.
 
-    Container is nothing but an Image in execution.
+- Container is nothing but an Image in execution.
 
 ### Images : 
-    A Docker image is a file that contains the instructions and files needed to create a Docker container.
+- A Docker image is a file that contains the instructions and files needed to create a Docker container.
 
-    A Docker image is a read-only template that contains the source code, libraries, dependencies, tools, and other files required for an application to run in a Docker container. 
+- A Docker image is a read-only template that contains the source code, libraries, dependencies, tools, and other files required for an application to run in a Docker container. 
 
 ### Official definition : 
-    A container image is a standardized package that includes all of the files, binaries, libraries, and configurations to run a container.
+- A container image is a standardized package that includes all of the files, binaries, libraries, and configurations to run a container.
 
-    For a PostgreSQL image, that image will package the database binaries, config files, and other dependencies. For a Python web app, it'll include the Python runtime, your app code, and all of its dependencies
+- For a PostgreSQL image, that image will package the database binaries, config files, and other dependencies. For a Python web app, it'll include the Python runtime, your app code, and all of its dependencies
 
 **There are two important principles of images:**
 
@@ -36,13 +36,13 @@ Docker is a powerful platform that serves several purposes in the development, d
 **NOTE :** Think of `images` as a CD drive which you borrowed from your friend, through which you can install Windows OS on your machine.
 
 ### Docker Hub : 
-    Docker registries are similar to version control repositories for code, such as GitHub or GitLab, but instead of code, they store Docker images. 
+- Docker registries are similar to version control repositories for code, such as GitHub or GitLab, but instead of code, they store Docker images. 
     
-    Docker images are the blueprints for creating Docker containers, which include the application and all of its dependencies.
+- Docker images are the blueprints for creating Docker containers, which include the application and all of its dependencies.
 
-    Docker Hub is the default registry for Docker and is analogous to GitHub in the context of Docker images.
+- Docker Hub is the default registry for Docker and is analogous to GitHub in the context of Docker images.
     
-    It's a cloud-based repository where users can sign up for an account, push their custom images, pull images published by others, and work with automated build workflows.
+- It's a cloud-based repository where users can sign up for an account, push their custom images, pull images published by others, and work with automated build workflows.
 
 ### Common Docker Commands : 
 

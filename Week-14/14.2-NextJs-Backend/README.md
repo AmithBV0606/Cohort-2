@@ -15,7 +15,13 @@ This means the same process can handle frontend and backend code.
 - No cors issues, single domain name for your FE and BE.
 - Ease of deployment, deploy a single codebase.
 
-## Recap of Data fetching in React : 
+**Deploying a Full stack app :**
+<img src="./assets/Pic-9.png" />
+
+**Deploying a NextJs app :**
+<img src="./assets/Pic-10.png" />
+
+## Recap of Data fetching in React (Client side data fetching): 
 
 Let’s do a quick recap of how data fetching works in React
 
@@ -37,7 +43,7 @@ Let’s do a quick recap of how data fetching works in React
 
 <img src="./assets/Pic-6.webp" />
 
-## Data fetching in Next : 
+## Data fetching in Next (Server side data fetching): 
 
 Ref - https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating
 
@@ -64,6 +70,7 @@ npm i axios
 ```ts
 async function getUserDetails() {
   const response = await axios.get("https://week-13-offline.kirattechnologies.workers.dev/api/v1/user/details")
+  console.log(response.data); // This will not be logged inside browser, but will be logged on the server(terminal).
 	return response.data;
 }
 ```
@@ -96,7 +103,7 @@ export default async function Home() {
 }
 ```
 
-**Note :** This is only possible in `server components` and not in `client component`.
+**Note :** Async component is only possible in `server components` and not in `client component`.
 
 5. Check the network tab, make sure there is no waterfalling
 
@@ -174,3 +181,174 @@ We want to introduce a route that returns hardcoded values for a user’s detail
 4. Initialize a `GET` route inside it.
 
 **Note :** Timestamp : `1:25:00` to `1:18:00` => Important lessons taught -> About hosting a React and NextJs application.
+
+## Better fetches :
+
+For the root page, we are fetching the details of the user by hitting an HTTP endpoint in `getUserDetails`.
+
+**Current Solution :**
+
+```ts
+import axios from "axios";
+
+async function getUserDetails() {
+  try {
+    const response = await axios.get("http://localhost:3000/api/user")
+	  return response.data;
+  }  catch(e) {
+    console.log(e);
+  }
+}
+
+export default async function Home() {
+  const userData = await getUserDetails();
+
+  return (
+    <div className="flex flex-col justify-center h-screen">
+        <div className="flex justify-center">
+            <div className="border p-8 rounded">
+                <div>
+                    Name: {userData?.name}
+                </div>
+                
+                {userData?.email}
+            </div>
+        </div>
+    </div>
+  );
+}
+```
+
+**Note :** `getUserDetails` runs on the server. This means you’re sending a request from a server back to the server.
+
+<img src="./assets/Pic-11.webp" />
+
+**Better Solution :**
+
+```ts
+import { PrismaClient } from "@prisma/client";
+
+const client = new PrismaClient();
+
+async function getUserDetails() {
+  try {
+    const user = await client.user.findFirst({});
+	  return {
+      name: user?.username,
+      email: user?.username
+    }
+  }  catch(e) {
+    console.log(e);
+  }
+}
+
+export default async function Home() {
+  const userData = await getUserDetails();
+
+  return (
+    <div className="flex flex-col justify-center h-screen">
+        <div className="flex justify-center">
+            <div className="border p-8 rounded">
+                <div>
+                    Name: {userData?.name}
+                </div>
+                
+                {userData?.email}
+            </div>
+        </div>
+    </div>
+  );
+}
+```
+
+## Singleton prisma client : 
+
+Ref - https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices
+
+1. Create db/index.ts
+
+2. Add a prisma client singleton inside it.
+
+```ts
+import { PrismaClient } from '@prisma/client'
+
+const prismaClientSingleton = () => {
+  return new PrismaClient()
+}
+
+declare global {
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>
+}
+
+const prisma = globalThis.prisma ?? prismaClientSingleton()
+
+export default prisma
+
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
+```
+
+Update imports of prisma everywhere
+
+```ts
+import client from "@/db"
+```
+
+## Server Actions (Controllers in Express.js):
+
+Ref : https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
+
+Right now, we wrote an API endpoint that let’s the user sign up
+
+```ts
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  // should add zod validation here
+  const user = await client.user.create({
+      data: {
+          username: body.username,
+          password: body.password
+      }
+  });
+
+  console.log(user.id);
+
+  return NextResponse.json({ message: "Signed up" });
+}
+```
+
+What if you could do a simple function call (even on a client component  that would run on the server?) (similar to RPC )
+
+    💡 Under the hood, still an HTTP request would go out. But you would feel like you’re making a function call
+
+**Steps to follow :**
+
+1. Create actions/user.ts file (you can create it in a different folder)
+
+2. Write a function that takes username and password as input and stores it in the DB
+
+```ts
+"use server"
+import client from "@/db"
+
+export async function signup(username: string, password: string) {
+  // should add zod validation here
+  const user = await client.user.create({
+    data: {
+      username: username,
+      password: password
+    }
+  });
+
+  console.log(user.id);
+
+  return "Signed up!"
+}
+```
+
+**Benefits of server actions :**
+
+1. Single function can be used in both client and server components.
+
+2. Gives you types of the function response on the frontend (very similar to trpc).
+
+3. Can be integrated seamlessly with forms (ref https://www.youtube.com/watch?v=dDpZfOQBMaU).

@@ -128,6 +128,8 @@ A Dockerfile is a text document that contains all the commands a user could call
 
 <img src="./assets/Pic-8.webp" />
 
+**Note :** This is not the most optimal way to write a docker file.
+
 <img src="./assets/Pic-9.png" />
 
 <br />

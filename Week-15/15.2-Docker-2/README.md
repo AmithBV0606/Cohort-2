@@ -190,7 +190,7 @@ Attach them to the same network :
 
 1. Clone the repo - https://github.com/100xdevs-cohort-2/week-15-live-2.2
 
-2. Then open the command prompt 
+2. Then open the command prompt.
 
 3. Create a network
 ```bash

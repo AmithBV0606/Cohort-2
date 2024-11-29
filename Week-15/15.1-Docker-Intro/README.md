@@ -190,6 +190,8 @@ The `-e` argument let’s you send in environment variables to your node.js app.
 
 2. `docker exec` - to exectue a command inside a container.
 
+3. `docker rmi <image_name --force>` : To delete a specific image.
+
 **Example :**
 
 1. List all contents of a container folder
@@ -214,18 +216,30 @@ DATABASE_URL="" node dist/index.js
 
 Once you’ve created your image, you can push it to dockerhub to share it with the world.
 
-1. Signup to dockerhub.
+1. Signup to [dockerhub](https://hub.docker.com/).
 
 2. Create a new repository.
-
 <img src="./assets/Pic-11.webp" />
 
-3. Login to docker cli
+3. Give the relevent name to the repository.
+<img src="./assets/Pic-12.png" />
+
+**Note :** The username of your account will be prefixed to the repository's name.
+
+4. Now keep the code ready and run the build command inside the terminal
+
+```bash
+docker build -t <repository_name> .
+``` 
+
+**Note :** The image created now can be pushed into our newly created repository in the docker hub.
+
+5. Login to docker cli
 
     - docker login
     - you might have to create an access token - https://docs.docker.com/security/for-developers/access-tokens/
 
-4. Push to the repository
+6. Push to the repository
 
 ```bash
 docker push your_username/your_reponame:tagname

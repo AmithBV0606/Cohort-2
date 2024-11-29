@@ -114,6 +114,8 @@ If you restart a mongo docker container, you will notice that your data goes awa
 
 This is because docker containers are transitory (they don’t retain data across restarts)
 
+**Note :** You won't be using Docker with Volumes in production.
+
 **Without volumes** : 
 
 1. Start a mongo container locally.
@@ -151,6 +153,8 @@ docker volume create volume_database
 ```bash
 docker run -v volume_database:/data/db -p 27017:27017 mongo
 ```
+
+**Note :** `/data/db` is the place inside a container where, the data is being stored.
 
 3. Open it in MongoDB Compass and add some data to it
 
@@ -193,10 +197,18 @@ Attach them to the same network :
 docker network create <Network_name>
 ```
 
+**Note :** If you want data in the database to persist across conatiner restarts, create a new volume to mount on the database :
+
+```bash
+docker volume create <volume_name>
+```
+
 4. Start mongo conatiner and attach it to the network created in the 3rd step 
 ```bash
-docker run -d -v volume_database:/data/db --name <Container name> --network <Network_name> -p 27017:27017 mongo
+docker run -d -v <volume_name>:/data/db --name <Container name> --network <Network_name> -p 27017:27017 mongo
 ```
+
+**Note :** In step 4, it's not necessary to give the port mapping `27017:27017`, because we will not be accessing the database container directly via port, we'll the connecting to db over a network.
 
 5. Then open the Vs Code's terminal.
 
@@ -216,6 +228,9 @@ docker run -d -p 3000:3000 --name <Container_name> --network <Network_name> imag
 ```bash
 docker logs <container_id>
 ```
+
+### After connecting 2 different containers to the same network : 
+<img src="./assets/Pic-16.png" />
 
 #### Things to do after connecting both the containers to the same network : 
 

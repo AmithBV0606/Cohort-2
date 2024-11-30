@@ -97,3 +97,57 @@ This will rebuild and recreate the containers using the updated image.
 **Summary :**
 
 You must manually create a new container to use the updated image. Existing containers will not automatically update when the image changes.
+
+### Question 3 : A question from one of the students
+
+      "In volumes example you ran docker run ... created a container added data to the database and you stopped the container but then you again ran docker run, won’t this create a new container and this obviously won’t have data, I was able to see data if I kill and run the same first container with docker start <container_id>."
+
+### Answer : 
+
+1. **Understanding `docker run` and `docker start` :**
+
+   - When you use `docker run`, Docker creates a new container based on the specified image. If you stop the container and run `docker run` again, Docker creates another new container. Each container is isolated and starts fresh unless you've explicitly set up persistent storage (e.g., volumes or bind mounts).
+
+   - When you use `docker start <container_id>`, you are restarting an existing container. Any data that was saved inside this specific container's writable layer will still be there.
+
+2. **Why the new container doesn't have the data :**
+
+   - Containers are ephemeral by design. Data stored inside a container's filesystem (e.g., /var/lib/mysql for a database) is part of the container's writable layer, which is unique to that container. When you stop or delete the container and then create a new one with `docker run`, the new container starts with a clean slate (its own writable layer).
+
+   - If no persistent storage (like Docker volumes) is configured, the data from the previous container is not available to the new one.
+
+3. **Why the old container retains the data with `docker start` :**
+
+   - When you stop a container, its writable layer is not deleted. Restarting the same container using `docker start <container_id>` allows you to resume from where you left off, including any data changes.
+
+4. **How volumes help with data persistence :**
+
+   - Docker volumes are independent of the container lifecycle. When you attach a volume to a container (e.g., using -v /data:/var/lib/mysql), any data written to the volume, persists even if the container is deleted and recreated.
+
+   - In your case, if a volume had been used during `docker run`, you could have started a new container with `docker run` and still accessed the old data.
+
+**Example Workflow to Use Volumes :**
+
+```bash
+# Create a container with a volume
+docker run -d -v my_data:/var/lib/mysql --name my_db mysql:latest
+
+# Add some data to the database
+
+# Stop and remove the container
+docker stop my_db
+docker rm my_db
+
+# Create a new container using the same volume
+docker run -d -v my_data:/var/lib/mysql --name new_db mysql:latest
+
+# The data will persist because it's stored in the volume
+```
+
+**Key Takeaways :**
+
+- Running `docker run` always creates a new container unless you explicitly use persistent storage (volumes).
+
+- Restarting the same container with `docker start` will preserve the data within that container's writable layer.
+
+- Using volumes is the best practice for data that needs to persist across container lifecycles.

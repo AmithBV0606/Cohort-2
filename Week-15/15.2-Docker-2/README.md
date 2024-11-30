@@ -110,7 +110,7 @@ What if we change the Dockerfile a bit -
 
 ## Volumes : 
 
-If you restart a mongo docker container, you will notice that your data goes away. 
+Let's say you created a container using mongo image, put some data into the database and then kill or delete that mongo container. Then you start a new container using the same mongo image, using `docker run` command, if you notice, your data goes away. 
 
 This is because docker containers are transitory (they don’t retain data across restarts)
 
@@ -245,3 +245,5 @@ docker logs <container_id>
 - **Bridge** : The default network driver for containers. When you run a container without specifying a network, it's attached to a bridge network. It provides a private internal network on the host machine, and containers on the same bridge network can communicate with each other.
 
 - **Host** : Removes network isolation between the container and the Docker host, and uses the host's networking directly. This is useful for services that need to handle lots of traffic or need to expose many ports.
+
+**Note :** We shouldn't containerize the frontend

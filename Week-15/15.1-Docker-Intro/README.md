@@ -229,10 +229,12 @@ Once you’ve created your image, you can push it to dockerhub to share it with 
 4. Now keep the code ready and run the build command inside the terminal
 
 ```bash
-docker build -t <repository_name> .
+docker build -t your_username/your_reponame:tagname .
 ``` 
 
 **Note :** The image created now can be pushed into our newly created repository in the docker hub.
+
+`:tagname` can be anything, but by default it'll be `latest`.
 
 5. Login to docker cli
 
@@ -244,3 +246,5 @@ docker build -t <repository_name> .
 ```bash
 docker push your_username/your_reponame:tagname
 ```
+
+**Note :** The repository name and the image name should be same.

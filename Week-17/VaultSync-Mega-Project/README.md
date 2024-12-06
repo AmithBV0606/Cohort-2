@@ -126,7 +126,7 @@ NOTE :
     - user-app
     - merchant-app
 
-## 3. Adding TailwindCSS to the project :
+## Adding TailwindCSS : [Imp]
 ```bash
 cd apps/user-app
 npm install -D tailwindcss postcss autoprefixer
@@ -167,7 +167,7 @@ module.exports = {
 
     💡Ensure tailwind is working as expected.
 
-## Adding prisma : 
+## Adding prisma : [Imp]
 
 Ref - https://turbo.build/repo/docs/handbook/tools/prisma
 
@@ -259,5 +259,271 @@ export const GET = async () => {
     return NextResponse.json({
         message: "hi there"
     })
+}
+```
+
+## Adding next-auth : [Imp] :
+
+**Database** :
+
+Update the database schema 
+```ts
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String?  @unique
+  name        String? 
+  number      String  @unique
+  password    String
+}
+
+model Merchant {
+  id          Int     @id @default(autoincrement())
+  email       String  @unique
+  name        String?
+  auth_type   AuthType   
+}
+
+enum AuthType {
+  Google
+  Github
+}
+```
+
+**User-app** :
+
+- Go to `apps/user-app`. 
+
+- Initialize next-auth
+```bash
+npm install next-auth
+```
+
+- Initialize a simple next auth config in `lib/auth.ts`:
+```ts
+import db from "@repo/db/client";
+import CredentialsProvider from "next-auth/providers/credentials"
+import bcrypt from "bcrypt";
+
+export const authOptions = {
+providers: [
+    CredentialsProvider({
+        name: 'Credentials',
+        credentials: {
+        phone: { label: "Phone number", type: "text", placeholder: "1231231231" },
+        password: { label: "Password", type: "password" }
+        },
+        // TODO: User credentials type from next-aut
+        async authorize(credentials: any) {
+        // Do zod validation, OTP validation here
+        const hashedPassword = await bcrypt.hash(credentials.password, 10);
+        const existingUser = await db.user.findFirst({
+            where: {
+                number: credentials.phone
+            }
+        });
+
+        if (existingUser) {
+            const passwordValidation = await bcrypt.compare(credentials.password, existingUser.password);
+            if (passwordValidation) {
+                return {
+                    id: existingUser.id.toString(),
+                    name: existingUser.name,
+                    email: existingUser.number
+                }
+            }
+            return null;
+        }
+
+        try {
+            const user = await db.user.create({
+                data: {
+                    number: credentials.phone,
+                    password: hashedPassword
+                }
+            });
+        
+            return {
+                id: user.id.toString(),
+                name: user.name,
+                email: user.number
+            }
+        } catch(e) {
+            console.error(e);
+        }
+
+        return null
+        },
+    })
+],
+secret: process.env.JWT_SECRET || "secret",
+callbacks: {
+    // TODO: can u fix the type here? Using any is bad
+    async session({ token, session }: any) {
+        session.user.id = token.sub
+
+        return session
+    }
+}
+}
+``` 
+
+- Create a `/api/auth/[...nextauth]/route.ts` :
+```ts
+import NextAuth from "next-auth"
+
+const handler = NextAuth(authOptions)
+
+export { handler as GET, handler as POST }
+```
+
+- Update `.env` : 
+```ts
+JWT_SECRET=test
+NEXTAUTH_URL=http://localhost:3001
+```
+
+- Ensure u see a signin page at http://localhost:3000/api/auth/signin
+
+**Merchant-app** :
+
+- Create `lib/auth.ts` :
+```ts
+import GoogleProvider from "next-auth/providers/google";
+
+export const authOptions = {
+    providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || ""
+        })
+    ],
+}
+```
+
+- Create a `/api/auth/[...nextauth]/route.ts` :
+```ts
+import NextAuth from "next-auth"
+
+const handler = NextAuth(authOptions)
+
+export { handler as GET, handler as POST }
+```
+
+- Put your google client and secret in .env of the merchant app. 
+
+- Ref https://next-auth.js.org/providers/google
+
+```ts
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=kiratsecr3t
+```
+
+- Ensure u see a signin page at http://localhost:3001/api/auth/signin
+
+- Try signing in and make sure it reaches the DB.
+
+### Add auth :
+
+**Client side** :
+
+- Wrap the apps around `SessionProvider` context from the next-auth package.
+
+- Go to `merchant-app/providers.tsx` :
+```ts
+"use client"
+import { RecoilRoot } from "recoil";
+import { SessionProvider } from "next-auth/react";
+
+export const Providers = ({children}: {children: React.ReactNode}) => {
+    return <RecoilRoot>
+        <SessionProvider>
+            {children}
+        </SessionProvider>
+    </RecoilRoot>
+}
+```
+
+- Do the same for `user-app/providers.tsx`.
+ 
+**Server side** : 
+
+- Create `apps/user-app/app/api/user/route.ts` :
+```ts
+import { getServerSession } from "next-auth"
+import { NextResponse } from "next/server";
+import { authOptions } from "../../lib/auth";
+
+export const GET = async () => {
+    const session = await getServerSession(authOptions);
+    if (session.user) {
+        return NextResponse.json({
+            user: session.user
+        })
+    }
+    return NextResponse.json({
+        message: "You are not logged in"
+    }, {
+        status: 403
+    })
+}
+```
+
+**Note** : Ensure login works as exptected.
+
+## On Ramping : 
+
+**Creating a dummy bank server** : We need this because we don't have access to real banking API's, to test out features/products.
+
+- Allows PayTM to generate a token for a payment for a user for some amount.
+```ts
+POST /api/transaction
+{
+	"user_identifier": "1",
+	"amount": "59900", // Rs 599
+	"webhookUrl": "http://localhost:3003/hdfcWebhook"
+}
+```
+
+- PayTM should redirect the user to
+```ts
+https://bank-api-frontend.com/pay?token={token_from_step_1}
+```
+
+- If user made a successful payment, Bank should hit the webhookUrl for the company.
+
+## Adding Express : [Imp] 
+
+**NOTE :** Here, in this project we're using Express.js to create a WebHook(Which is also a Http server).
+
+- Init node.js project + esbuild : 
+```bash
+cd apps
+mkdir bank_webhook_handler
+cd bank_webhook_handler
+npm init -y
+npx tsc --init
+npm i esbuild express @types/express
+```
+
+- Update `tsconfig.ts` : 
+```ts
+{
+    "extends": "@repo/typescript-config/base.json",
+    "compilerOptions": {
+      "outDir": "dist"
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }
 ```

@@ -536,6 +536,8 @@ npm i esbuild express @types/express
 
 - So we need to explicitly lock the balance row for the sending user so that only one transaction can access it at at time, and the other one waits until the first transaction has committed.
 
+<img src="./assets/Pic-16.png" />
+
 Hint 1 - https://www.cockroachlabs.com/blog/select-for-update/
 
 Hint 2 - https://www.prisma.io/docs/orm/prisma-client/queries/raw-database-access/raw-queries

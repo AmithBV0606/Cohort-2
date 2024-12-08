@@ -527,3 +527,98 @@ npm i esbuild express @types/express
     "exclude": ["node_modules", "dist"]
 }
 ```
+
+## Locking of rows in Postgres Database : 
+
+- In postgres, a transaction ensure that either all the statements happen or none. 
+
+- It does not lock rows/ revert a transaction if something from this transaction got updated before the transaction committed (unlike MongoDB).
+
+- So we need to explicitly lock the balance row for the sending user so that only one transaction can access it at at time, and the other one waits until the first transaction has committed.
+
+Hint 1 - https://www.cockroachlabs.com/blog/select-for-update/
+
+Hint 2 - https://www.prisma.io/docs/orm/prisma-client/queries/raw-database-access/raw-queries
+
+### Examples : 
+
+- Try simulating two request together by adding a 4s sleep timeout in the transaction : 
+
+```ts
+"use server"
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
+import prisma from "@repo/db/client";
+
+export async function p2pTransfer(to: string, amount: number) {
+    const session = await getServerSession(authOptions);
+    const from = session?.user?.id;
+    if (!from) {
+        return {
+            message: "Error while sending"
+        }
+    }
+    const toUser = await prisma.user.findFirst({
+        where: {
+            number: to
+        }
+    });
+
+    if (!toUser) {
+        return {
+            message: "User not found"
+        }
+    }
+    await prisma.$transaction(async (tx) => {
+        const fromBalance = await tx.balance.findUnique({
+            where: { userId: Number(from) },
+          });
+          if (!fromBalance || fromBalance.amount < amount) {
+            throw new Error('Insufficient funds');
+          }
+          await new Promise(r => setTimeout(r, 4000));
+          await tx.balance.update({
+            where: { userId: Number(from) },
+            data: { amount: { decrement: amount } },
+          });
+
+          await tx.balance.update({
+            where: { userId: toUser.id },
+            data: { amount: { increment: amount } },
+          });
+    });
+}
+```
+
+**Problem with this approch :** Send two requests in two tabs and see if you are able to receive negative balances?
+
+### Solution : 
+
+```ts
+"use server"
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
+import prisma from "@repo/db/client";
+
+export async function p2pTransfer(to: string, amount: number) {
+    const session = await getServerSession(authOptions);
+    const from = session?.user?.id;
+    if (!from) {
+        return {
+            message: "Error while sending"
+        }
+    }
+    const toUser = await prisma.user.findFirst({
+        where: {
+            number: to
+        }
+    });
+
+    if (!toUser) {
+        return {
+            message: "User not found"
+        }
+    }
+    await prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
+```

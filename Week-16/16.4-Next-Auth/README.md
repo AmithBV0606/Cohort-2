@@ -262,7 +262,52 @@ export async function GET() {
 }
 ```
 
-Persist more data (user id) (Ref https://next-auth.js.org/getting-started/example#using-nextauthjs-callbacks) (Ref https://next-auth.js.org/configuration/callbacks)
+9. To Persist more data (user id) (Ref https://next-auth.js.org/getting-started/example#using-nextauthjs-callbacks)
+ 
+Ref https://next-auth.js.org/configuration/callbacks
+
+**NOTE :** 
+- By default Next-Auth won't return the details like `userId`. To get such info we use callbacks.
+
+- NextAuth.js allows you to hook into various parts of the authentication flow via our built-in callbacks.
+
+- For example, to pass a value from the sign-in to the frontend, client-side, you can use a combination of the session and jwt callback.
+
+Example : 
+
+```ts
+// pages/api/auth/[...nextauth].js
+...
+callbacks: {
+  async jwt({ token, account }) {
+    // Persist the OAuth access_token to the token right after signin
+    if (account) {
+      token.accessToken = account.access_token
+    }
+    return token
+  },
+  async session({ session, token, user }) {
+    // Send properties to the client, like an access_token from a provider.
+    session.accessToken = token.accessToken
+    return session
+  }
+}
+...
+```
+
+```ts
+// components/accessToken.jsx
+import { useSession, signIn, signOut } from "next-auth/react"
+
+export default function Component() {
+  const { data } = useSession()
+  const { accessToken } = data
+
+  return <div>Access Token: {accessToken}</div>
+}
+```
+
+- Now whenever you call getSession or useSession, the data object which is returned will include the accessToken value.
 
 ```ts
 callbacks: {

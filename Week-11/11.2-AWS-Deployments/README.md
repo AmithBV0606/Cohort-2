@@ -113,6 +113,45 @@ This should start a nginx server on port 80
 Try visiting the website
 <img src="./assets/Pic-15.webp" />
 
+### Create reverse proxy :
+```bash
+sudo rm /etc/nginx/nginx.conf
+sudo vi /etc/nginx/nginx.conf
+```
+
+```nginx
+events {
+    # Event directives...
+}
+
+http {
+	server {
+    listen 80;
+    server_name be1.100xdevs.com;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+}
+```
+
+```bash
+sudo nginx -s reload
+```
+
+### Visit the website :
+```link
+https://be1.100xdevs.com/
+```
+
+<img src="./assets/Pic-16.webp" />
+
 # Analogy of today's class :
 
     EC2 is like a hotel, and ports are like rooms in the hotel. A reverse proxy acts as the hotel manager, directing guests (requests) to their respective rooms (ports).
